@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html ng-app="photoapp">
+<head>
+    <title>Angular Photo Gallery Demo</title>
+    <script type="text/javascript" src="angular.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+    <style>
+        body {
+            margin: 50px 0 50px 0;
+        }
+        .toolbar {
+            position: fixed;
+            top: 0;
+            background: #eee;
+            height: 30px;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 5px;
+            z-index: 1000;
+            box-shadow: 0 1px 2px 1px #777;
+        }
+        .card {
+            display: block;
+            float: left;
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        .photo-frame {
+            display: block;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 1px 1px 1px #888;
+            position: relative;
+            width: 90%;
+            height: 90%;
+            margin: 5%;
+        }
+        .photo-frame > img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            max-width: 100%;
+            max-height: 100%;
+            transform: translate(-50%, -50%);
+            -webkit-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body ng-controller="PhotoCtrl as ctrl">
+
+<div class="toolbar">
+    <input type="range" min="0" max="5" ng-model="ctrl.sizing.step" ng-change="ctrl.inputSize()">
+</div>
+
+<span
+    ng-repeat="photo in ctrl.photos"
+    class="card"
+    ng-style="{width:ctrl.sizing.containerSize + 'px', height:ctrl.sizing.containerSize + 'px'}">
+    <span class="photo-frame"><img ng-src="{{photo}}"></span>
+</span>
+
+</body>
+</html>

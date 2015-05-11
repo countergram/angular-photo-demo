@@ -1,0 +1,17 @@
+{
+  "name": "angular-photo-demo",
+  "description": "Original demo app of photo gallery",
+  "dependencies": {
+    "angular": "^1.3.15"
+  },
+  "devDependencies": {
+    "gm": "^1.17.0",
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^3.8.0",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-copy": "^0.8.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "matchdep": "^0.3.0",
+    "path": "^0.11.14"
+  }
+}
