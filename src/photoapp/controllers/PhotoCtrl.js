@@ -1,25 +1,7 @@
-angular.module('photoapp', []);
-
-/**
- * Service for providing the back-end index of available images.
- */
-angular.module('photoapp')
-.service('photoIndex', ['$http', function($http) {
-  var self = this;
-  self.index = null;
-  $http({
-    method: 'GET',
-    url: 'img/images.json'
-  }).success(function(data) {
-    self.index = data;
-  }).error(function() {
-    console.log("Couldn't load images.json");
-  });
-}]);
-
 /**
  * Main controller for the gallery
  */
+require('../services/photoIndex');
 angular.module('photoapp')
 .controller('PhotoCtrl', ['$window', '$scope', 'photoIndex', function($window, $scope, photoIndex) {
   var self = this;
@@ -79,6 +61,4 @@ angular.module('photoapp')
       }
     }
   };
-
-
 }]);

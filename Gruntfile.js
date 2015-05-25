@@ -41,7 +41,7 @@ module.exports = function(grunt) {
     browserify: {
       build: {
         files: {
-          'dist/main.js': ['src/main.js']
+          'dist/main.js': ['src/photoapp/main.js']
         }
       }
     },
