@@ -2,65 +2,63 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('images', 'Number and resize images', function() {
     var path = require('path');
     var gm = require('gm');
-    var mkdirp = require('mkdirp');
+    var async = require('async');
     var sizes = this.data.sizes || [500];
     var done = this.async();
 
     this.files.forEach(function(fileSpec) {
       grunt.file.mkdir(fileSpec.dest);
 
-      // a job list
-      var inFiles = [];
+      // Job list with functions for all destination images
+      var taskFuncs = [];
+
+      // Stats to report afterward
+      var numErrors = 0;
+      var numExisted = 0;
+
       // this will become a static json file
       var index = [];
       var forJson = {index: index, sizes: sizes};
 
       fileSpec.src.forEach(function(file, fileNo) {
         var parts = path.parse(file);
-        for(var i = 0; i < sizes.length; i++) {
-          inFiles.push({
-            file: file,
-            fileNo: fileNo,
-            size: sizes[i],
-            dest: path.join(fileSpec.dest, parts.name + '_' + sizes[i] + parts.ext)
-          });
-        }
-        index.push({
+        // The JSON only gets one description of the image, sizes separate
+        var imageSpec = {
           basename: parts.name,
           ext: parts.ext,
           tags: []
+        };
+        index.push(imageSpec);
+        // The job list gets an entry for each size
+        sizes.forEach(function(size) {
+          taskFuncs.push(function(callback) {
+            var dest = path.join(fileSpec.dest, parts.name + '_' + size + parts.ext);
+            if(grunt.file.exists(dest)) {
+              numExisted++;
+              callback();
+            } else {
+              gm(file).resize(size, size).write(dest, function(err) {
+                // Log but squelch errors - otherwise processing would halt
+                if(err) {
+                  numErrors++;
+                  grunt.log.writeln('Error processing', file, '->', dest);
+                }
+                callback();
+              });
+            }
+          });
         });
       });
 
-      // Create an index file for the front end to use
-      // TODO exclude or mark errors?
-      grunt.file.write(path.join(fileSpec.dest, 'images.json'), JSON.stringify(forJson));
-
-      // Func for processing inFiles with itself as the callback
-      var i = -1;
-      var numErrors = 0;
-      var numExisted = 0;
-      function processFile(err) {
-        if(err) {
-          grunt.log.writeln("Error processing " + inFiles[i]);
-          numErrors++;
-        }
-        if(++i < inFiles.length) {
-          var job = inFiles[i];
-          if(!grunt.file.exists(job.dest)) {
-            gm(job.file).resize(job.size, job.size).write(job.dest, processFile);
-          } else {
-            numExisted++;
-            setTimeout(processFile, 0);
-          }
-        } else {
-          var numDone = inFiles.length - numErrors - numExisted;
-          grunt.log.writeln(numDone + " images written, " + numErrors + " errors, " + numExisted + " existed.");
-          done(true);
-        }
-      }
-      processFile();
-      processFile();
+      async.parallelLimit(taskFuncs, require('os').cpus().length, function() {
+        // Create an index file for the front end to use
+        // TODO exclude or mark errors?
+        grunt.file.write(path.join(fileSpec.dest, 'images.json'), JSON.stringify(forJson));
+        // Log summary
+        var numDone = taskFuncs.length - numErrors - numExisted;
+        grunt.log.writeln(numDone, 'images written,', numErrors, 'errors,', numExisted, 'existed.');
+        done(true);
+      });
     });
   });
 };
