@@ -26,6 +26,9 @@ module.exports = function(grunt) {
         sizes: [150, 300, 700, 1100]
       }
     },
+    jshint: {
+      build: ['Gruntfile.js', 'src/**/*.js', 'tasks/**/*.js']
+    },
     // Move static index.html
     copy: {
       build: {
@@ -73,6 +76,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', [
     'clean:build',
+    'jshint',
     'copy',
     'browserify',
     'less',
