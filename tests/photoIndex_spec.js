@@ -14,13 +14,13 @@ describe('photoIndex', function() {
   });
 
   it('fetches the image index', inject(function(photoIndex, $httpBackend) {
-    $httpBackend.whenGET('/img/images.json').respond(dummyImages);
+    $httpBackend.whenGET('img/images.json').respond(dummyImages);
     $httpBackend.flush();
     expect(photoIndex.index).toEqual(dummyImages);
   }));
 
   it('leaves the index null on http error', inject(function(photoIndex, $httpBackend) {
-    $httpBackend.whenGET('/img/images.json').respond(500);
+    $httpBackend.whenGET('img/images.json').respond(500);
     $httpBackend.flush();
     expect(photoIndex.index).toBeNull();
   }));

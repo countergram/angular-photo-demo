@@ -15,7 +15,7 @@ Installation
 
 5. Run `grunt` to build the app
 
-6. Serve the dist/ directory on an HTTP server (local access will not allow AJAX on most browsers)
+6. Serve the dist/ directory on an HTTP server or open dist/index.html in Firefox, which allows HTTP requests for local files in the same directory.
 
 Testing
 -------
