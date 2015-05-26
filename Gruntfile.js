@@ -4,6 +4,7 @@ module.exports = function(grunt) {
   grunt.loadTasks('tasks');
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    // clean and clean:images are separate because images take longer to generate.
     clean: {
       build: {
         files: [{
@@ -27,9 +28,8 @@ module.exports = function(grunt) {
       }
     },
     jshint: {
-      build: ['Gruntfile.js', 'src/**/*.js', 'tasks/**/*.js']
+      build: ['Gruntfile.js', 'src/**/*.js', 'tasks/**/*.js', 'tests/**/*.js']
     },
-    // Move static index.html
     copy: {
       build: {
         src: 'src/index.html',
@@ -40,7 +40,6 @@ module.exports = function(grunt) {
         dest: 'dist/angular.js'
       }
     },
-    // Concat javascript based on requires
     browserify: {
       build: {
         files: {
@@ -73,7 +72,6 @@ module.exports = function(grunt) {
       }
     }
   });
-
   grunt.registerTask('default', [
     'clean:build',
     'jshint',
