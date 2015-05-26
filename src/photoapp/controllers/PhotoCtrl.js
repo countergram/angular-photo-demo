@@ -2,7 +2,7 @@
  * Main controller for the gallery
  */
 require('../services/photoIndex');
-angular.module('photoapp')
+require('../photoapp')
 .controller('PhotoCtrl', ['$window', '$scope', 'photoIndex', function($window, $scope, photoIndex) {
   var self = this;
   self.data = null; // Index data acquired from the backend
@@ -47,11 +47,9 @@ angular.module('photoapp')
       var sizes = self.data.sizes ? self.data.sizes.slice() : [];
       sizes.sort(function(a,b){ return a - b; });
       var imageSize = sizes[0] || 200;
-      console.log(sizes, containerSize);
       for(var j = 0; j < sizes.length && imageSize < containerSize; j++) {
         imageSize = sizes[j];
       }
-      console.log(imageSize);
       // Regenerate the photos array without recreating it or unnecessary deletion
       self.photos.length = self.data.index.length;
       for(var i = 0; i < self.data.index.length; i++) {

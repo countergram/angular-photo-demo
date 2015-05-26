@@ -1,2 +1,2 @@
-angular.module('photoapp', []);
+require('./photoapp.js');
 require('./controllers/PhotoCtrl');
